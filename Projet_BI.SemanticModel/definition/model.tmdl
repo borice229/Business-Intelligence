@@ -1,0 +1,22 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: fr-FR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Feuil1"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.146.705.0 (25.08)+b71502aff0a01340c88f384884ef42771068f115
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Feuil1
+ref table DateTableTemplate_a0d5accc-ca9d-47f5-bddf-b6ee62b894cd
+ref table LocalDateTable_22a8d247-b27f-481c-9979-46760cd77ba1
+
+ref cultureInfo fr-FR
+

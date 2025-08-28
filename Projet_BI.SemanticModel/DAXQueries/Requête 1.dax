@@ -1,0 +1,1 @@
+NoClients = DISTINCTCOUNT('Feuil1'[Client])

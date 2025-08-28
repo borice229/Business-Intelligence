@@ -1,0 +1,5 @@
+relationship 183aec92-e40b-44dd-a2ab-2414a734d7fe
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Feuil1.'Date de commande'
+	toColumn: LocalDateTable_22a8d247-b27f-481c-9979-46760cd77ba1.Date
+

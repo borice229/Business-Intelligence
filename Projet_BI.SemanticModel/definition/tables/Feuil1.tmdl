@@ -1,0 +1,144 @@
+table Feuil1
+	lineageTag: 5f96be9d-08c4-45ac-b1cb-e996dfe0a799
+
+	column Commercial
+		dataType: string
+		lineageTag: 12d639e3-6866-46f8-a4d2-e16a0d4bdfc7
+		summarizeBy: none
+		sourceColumn: Commercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ville
+		dataType: string
+		lineageTag: d35511dd-13d8-4d70-bbdc-5e94b969e3f9
+		summarizeBy: none
+		sourceColumn: Ville
+
+		annotation SummarizationSetBy = Automatic
+
+	column Région
+		dataType: string
+		lineageTag: c813fd00-2064-405c-a41c-7b938da9ff7f
+		summarizeBy: none
+		sourceColumn: Région
+
+		annotation SummarizationSetBy = Automatic
+
+	column Client
+		dataType: string
+		lineageTag: a5254fee-6dd6-43d3-b793-0eba5da61aa6
+		summarizeBy: none
+		sourceColumn: Client
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date de commande'
+		dataType: dateTime
+		formatString: d mmmm yyyy
+		lineageTag: 0f52beec-cd97-417b-9b7a-49564f5792ae
+		summarizeBy: none
+		sourceColumn: Date de commande
+
+		variation Variation
+			isDefault
+			relationship: 183aec92-e40b-44dd-a2ab-2414a734d7fe
+			defaultHierarchy: LocalDateTable_22a8d247-b27f-481c-9979-46760cd77ba1.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Article
+		dataType: string
+		lineageTag: 37929c5c-ca40-4799-b394-e4e5f836f82b
+		summarizeBy: none
+		sourceColumn: Article
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantité
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ff0e16c-7dad-4ad2-b7bd-095bdcf54614
+		summarizeBy: sum
+		sourceColumn: Quantité
+
+		annotation SummarizationSetBy = Automatic
+
+	column Prix
+		dataType: double
+		lineageTag: 84516b3c-c170-4a2c-b89d-44df38e5a568
+		summarizeBy: sum
+		sourceColumn: Prix
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Chiffre d''affaire'
+		dataType: double
+		lineageTag: 2e1bdc85-08d7-431c-b307-a04965c93c39
+		summarizeBy: sum
+		sourceColumn: Chiffre d'affaire
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Bénéfice
+		dataType: double
+		lineageTag: ce5cd059-8208-4280-8e8a-1db299bf4cc0
+		summarizeBy: sum
+		sourceColumn: Bénéfice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CA = ```
+			CALCULATE(
+			        SUMX('Feuil1', 'Feuil1'[Quantité] * 'Feuil1'[Prix]),
+			        ALLEXCEPT('Feuil1', 'Feuil1'[Client])
+			    )
+			
+			```
+		lineageTag: ef6b6aa3-8d80-4076-9c86-09d673e40de8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Statut = ```
+			
+			    IF(
+			        'Feuil1'[CA] <= 1434,
+			        "Low",
+			        IF(
+			            'Feuil1'[CA] <= 2868,
+			            "Medium",
+			            "High"
+			        )
+			    )
+			```
+		lineageTag: 1ccd486a-adaa-4fb0-bbac-7324495fa278
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Feuil1 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("h:\Mes documents\optimisation\salesData.xlsx"), null, true),
+				    Feuil1_Sheet = Source{[Item="Feuil1",Kind="Sheet"]}[Data],
+				    #"En-têtes promus" = Table.PromoteHeaders(Feuil1_Sheet, [PromoteAllScalars=true]),
+				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"Commercial", type text}, {"Ville", type text}, {"Région", type text}, {"Client", type text}, {"Date de commande", type date}, {"Article", type text}, {"Quantité", Int64.Type}, {"Prix", type number}, {"Chiffre d'affaire", type number}, {"Bénéfice", type number}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
